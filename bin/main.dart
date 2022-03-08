@@ -1,3 +1,5 @@
+import 'package:flutter_init/main.dart';
+
 void main(List<String> arguments) {
-  print(arguments);  
+  start(arguments);
 }

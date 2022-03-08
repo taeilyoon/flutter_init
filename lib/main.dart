@@ -2,13 +2,33 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart';
+import 'dart:developer';
 
 const String fileOption = 'file';
 const String helpFlag = 'help';
-const String defaultConfigFile = 'flutter_launcher_icons.yaml';
+const String defaultConfigFile = 'flutter_init.yaml';
 
-start() {
-  const loadConfigFileFromArgResults();
+start(List<String> arguments) {
+  final ArgParser parser = ArgParser(allowTrailingOptions: true);
+  parser.addFlag(helpFlag, abbr: 'h', help: 'Usage help', negatable: false);
+  // Make default null to differentiate when it is explicitly set
+  parser.addOption(fileOption,
+      abbr: 'f', help: 'Config file (default: $defaultConfigFile)');
+  final ArgResults argResults = parser.parse(arguments);
+
+  if (argResults[helpFlag]) {
+    stdout.writeln('Generates icons for iOS and Android');
+    stdout.writeln(parser.usage);
+    exit(0);
+  }
+
+  final Map<String, dynamic>? yamlConfig =
+      loadConfigFileFromArgResults(argResults, verbose: true);
+
+  if (yamlConfig == null) {
+    print("error");
+    // throw const NoConfigFoundException();
+  }
 }
 
 getConfig() {}
@@ -16,7 +36,7 @@ getConfig() {}
 Map<String, dynamic>? loadConfigFileFromArgResults(ArgResults argResults,
     {bool verbose = false}) {
   print('createIconsFromArguments');
-  print(argResults);
+  inspect({argResults});
   final String? configFile = argResults[fileOption];
   final String? fileOptionResult = argResults[fileOption];
 
@@ -64,13 +84,10 @@ Map<String, dynamic> loadConfigFile(String path, String? fileOptionResult) {
     stderr.writeln("");
     exit(1);
   }
-  //
-  //
-  //
-  //
-  //
+  print(yamlMap['flutter_init'].toString());
+
   final Map<String, dynamic> config = <String, dynamic>{};
-  
+
   for (MapEntry<dynamic, dynamic> entry in yamlMap['flutter_init'].entries) {
     config[entry.key] = entry.value;
   }

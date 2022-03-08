@@ -32,6 +32,9 @@ flutter_init:
   iosPackageName: io.tqeil.test
   androidPackageName: io.tqeil.test
   appName: 테스트
+  icon : asset/images/test.png
+  
+
 
   permissions:
     camera: your comment
