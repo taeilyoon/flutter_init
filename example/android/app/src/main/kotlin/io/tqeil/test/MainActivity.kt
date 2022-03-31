@@ -1,4 +1,4 @@
-package com.example.example
+package io.tqeil.test
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:args/args.dart';
+import 'package:flutter_init/package_name.dart';
 import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart';
 import 'dart:developer';
@@ -8,7 +9,7 @@ const String fileOption = 'file';
 const String helpFlag = 'help';
 const String defaultConfigFile = 'flutter_init.yaml';
 
-start(List<String> arguments) {
+start(List<String> arguments) async {
   final ArgParser parser = ArgParser(allowTrailingOptions: true);
   parser.addFlag(helpFlag, abbr: 'h', help: 'Usage help', negatable: false);
   // Make default null to differentiate when it is explicitly set
@@ -25,6 +26,14 @@ start(List<String> arguments) {
   final Map<String, dynamic>? yamlConfig =
       loadConfigFileFromArgResults(argResults, verbose: true);
 
+  if (yamlConfig?['packageName'] != null) {
+    print("RENAME PACKAGE ANDROID");
+    var androidStep =
+        AndroidRenameSteps(yamlConfig?['packageName'], yamlConfig?['appName']);
+    await androidStep.process();
+    await androidStep.appNameCahnge("TEST");
+  }
+
   if (yamlConfig == null) {
     print("error");
     // throw const NoConfigFoundException();
@@ -35,7 +44,6 @@ getConfig() {}
 
 Map<String, dynamic>? loadConfigFileFromArgResults(ArgResults argResults,
     {bool verbose = false}) {
-  print('createIconsFromArguments');
   inspect({argResults});
   final String? configFile = argResults[fileOption];
   final String? fileOptionResult = argResults[fileOption];
@@ -48,7 +56,6 @@ Map<String, dynamic>? loadConfigFileFromArgResults(ArgResults argResults,
       if (verbose) {
         stderr.writeln(e);
       }
-
       return null;
     }
   }
